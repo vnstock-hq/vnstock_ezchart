@@ -10,7 +10,7 @@ Khám phá vnstock_ezchart hôm nay, và bắt đầu hành trình đầu tư th
 
 # Cài đặt
 
-`pip install git+https://github.com/vnstock-hq/vnstock_ezchart.git@main`
+`pip install vnstock-ezchart`
 
 # Sử dụng
 
@@ -33,7 +33,7 @@ ezchart.combo_chart(candle_df['volume'] / 1000_000, candle_df['close']/1000,
                   title_fontsize=14
                   )
 ```
-![Combo chart](docs/assets/images/combo_chart.png)
+![Combo chart](https://github.com/vnstock-hq/vnstock_ezchart/blob/main/docs/assets/images/combo_chart.png?raw=true)
 
 # Các dạng biểu đồ hỗ trợ
 - Bar
@@ -96,7 +96,7 @@ Tham số:
 Utils.create_cmap('vnstock')
 ```
 
-![color_map](docs/assets/images/color_map.png)
+![color_map](https://github.com/vnstock-hq/vnstock_ezchart/blob/main/docs/assets/images/color_map.png?raw=true)
 
 
 ## Tải font chữ
