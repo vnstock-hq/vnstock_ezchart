@@ -10,9 +10,15 @@ Khám phá vnstock_ezchart hôm nay, và bắt đầu hành trình đầu tư th
 
 # Cài đặt
 
-`pip install git+https://github.com/vnstock-hq/vnstock_ezchart.git@beta`
+`pip install git+https://github.com/vnstock-hq/vnstock_ezchart.git@main`
 
 # Sử dụng
+
+Sử dụng demo notebook có trong thư mục docs hoặc link Google Colab dưới đây: 
+
+<a target="_blank" href="https://colab.research.google.com/github/vnstock-hq/vnstock_ezchart/blob/main/docs/vnstock_ezchart_demo.ipynb">
+  <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
+</a>
 
 - Khởi tạo client: `ezchart = MPlot()`
 - Gọi hàm và biểu diễn dữ liệu: 
