@@ -1,0 +1,9 @@
+# Giả định bạn đang sử dụng môi trường Python nguyên bản
+squarify
+wordcloud
+requests
+vnstock
+matplotlib
+seaborn
+pandas
+openpyxl
