@@ -1,12 +1,12 @@
 # Giới thiệu
 
-> `vnstock_ezchart` ra đời với một sứ mệnh đơn giản nhưng đầy ý nghĩa: Làm cho việc phân tích dữ liệu trở nên dễ dàng và tiện lợi hơn bao giờ hết đặc biệt là lĩnh vực tài chính/chứng khoán. `vnstock_ezchart` được phát triển như một công cụ bổ trợ cho gói dữ liệu vnstock, nhằm mục đích cung cấp cho cộng đồng một giải pháp toàn diện để biểu diễn và phân tích dữ liệu tài chính một cách dễ dàng, mà không yêu cầu người dùng phải am hiểu sâu về lập trình. Dữ liệu đầu vào của các hàm trong `vnstock_ezchart` nhận kiểu dữ liệu Python phổ biến như List, DataFrame, Series, Numpy array.
+> `vnstock_ezchart` ra đời với một sứ mệnh đơn giản nhưng đầy ý nghĩa: Làm cho việc phân tích dữ liệu trở nên dễ dàng và tiện lợi hơn bao giờ hết đặc biệt là lĩnh vực tài chính/chứng khoán. `vnstock_ezchart` được phát triển như một công cụ bổ trợ cho gói dữ liệu vnstock, nhằm mục đích cung cấp tới cộng đồng một giải pháp toàn diện để biểu diễn và phân tích dữ liệu tài chính một cách dễ dàng, mà không yêu cầu người dùng phải am hiểu sâu về lập trình. Dữ liệu đầu vào của các hàm trong `vnstock_ezchart` nhận kiểu dữ liệu Python phổ biến như List, DataFrame, Series, Numpy array.
 
-Chúng tôi hiểu rằng, để đưa ra những quyết định đầu tư hay nghiên cứu học thuật, việc trực quan hóa dữ liệu là không thể thiếu. Với `vnstock_ezchart` bạn có thể đáp ứng 80% nhu cầu biểu diễn dữ liệu hàng ngày của mình chỉ bằng cách thay đổi các tham số đầu vào của hàm để tùy biến hay đơn giản chỉ cần nạp dữ liệu để xem trước, sau đó quyết định tinh chỉnh để tạo ra biểu đồ đẹp mắt và chia sẻ.
+Tôi hiểu rằng, để đưa ra những quyết định dù là đầu tư hay trong dự án nghiên cứu, việc trực quan hóa dữ liệu là không thể thiếu. Với `vnstock_ezchart` bạn có thể đáp ứng 80% nhu cầu biểu diễn dữ liệu hàng ngày của mình chỉ bằng cách thay đổi các tham số đầu vào của hàm để tùy biến hay đơn giản chỉ cần nạp dữ liệu để xem trước, sau đó quyết định tinh chỉnh để tạo ra biểu đồ đẹp mắt và chia sẻ.
 
-`vnstock_ezchart` sử dụng các thư viện nền bao gồm (nhưng không giới hạn): matplotlib, seaborn, squarify, wordcloud và cung cấp tùy biến thông dụng và tiêu chuẩn hóa chúng để bạn có thể sử dụng dễ dàng thay vì phải học nhiều công sức chỉ để tạo ra các biểu đồ đơn giản trong python.
+`vnstock_ezchart` sử dụng kết hợp các thư viện bao gồm (nhưng không giới hạn): matplotlib, seaborn, squarify, wordcloud và cung cấp tùy biến thông dụng và tiêu chuẩn hóa chúng để bạn có thể sử dụng dễ dàng thay vì phải dành nhiều công sức nghiên cứu hay loay hoay viết prompt với AI.
 
-Khám phá vnstock_ezchart hôm nay, và bắt đầu hành trình đầu tư thông minh của bạn với sự tự tin và hiệu quả tối đa.
+Khám phá vnstock_ezchart hôm nay, đánh dâu ⭐ cho repo này và đừng quên lan tỏa tới cộng đồng của bạn.
 
 # Cài đặt
 
@@ -52,8 +52,7 @@ ezchart.combo_chart(candle_df['volume'] / 1000_000, candle_df['close']/1000,
 
 ## Xem hướng dẫn tích hợp: 
 ```
-ezchart = MPlot()
-MPlot.help('bar)`
+ezchart.help('bar)`
 ```
 
 Kết quả trả về:
@@ -90,7 +89,14 @@ Tham số:
     - bar_edge_color (str): Màu viền cho các cột (bar) trong biểu đồ.
 ```
 
-## Xem bảng màu tích hợp sẵn
+## Tùy chọn về bảng màu
+### Áp dụng bảng màu để sử dụng Matplotlib
+
+`Utils.apply_palette(color_palette='vnstock', palette_shuffle=False)`
+
+Cho phép áp dụng bảng màu bạn chọn cho toàn môi trường làm việc (Jupyter Notbook/Google Colab). Bạn có thể tiếp tục sử dụng Matplotlib theo cách bạn thích với code bạn tạo ra nhưng giao diện sử dụng bảng màu được áp dụng. Bằng cách này bạn vừa có thể dễ dàng tạo ra giao diện đồ thị mình muốn trong khi thoải mái tùy biến biểu đồ.
+
+### Tạo ra bảng màu (cmap) tùy chỉnh từ các bộ màu có sẵn
 
 ```
 Utils.create_cmap('vnstock')
@@ -98,9 +104,34 @@ Utils.create_cmap('vnstock')
 
 ![color_map](https://github.com/vnstock-hq/vnstock_ezchart/blob/main/docs/assets/images/color_map.png?raw=true)
 
+### Liệt kê bảng màu mặc định trong Matplotlib, Seaborn
 
-## Tải font chữ
+Cho phép bạn liệt kê tất cả bảng màu mặc định đi kèm Matplotlib, sử dụng khi áp dụng màu cho heatmap.
 
 ```
+Utils.list_cmap ()
+```
+
+## Tùy chọn về font chữ
+
+### Liệt kê các font có sẵn
+
+Để liệt kê các font có trong môi trường làm việc được nhận diện bởi Matplotlib, bạn sử dụng câu lệnh dưới đây. Tùy chọn này cho phép bạn sử dụng đúng font được hỗ trợ, hữu ích trong trường hợp bạn dùng Google Colab không có sẵn các font như trên máy tính của mình.
+```
+Utils.list_font()
+```
+
+### Tải font chữ dế dàng
+
+Tải thêm font mới bằng câu lệnh dưới đây, cho phép tải mới font về thư mục làm việc từ Google Fonts. Bạn có thể sử dụng đường dẫn font để cài đặt hiển thị trong biểu đồ Word Cloud.
+```
 Utils.download_font('Roboto')
+```
+
+### Áp dụng font chữ lên hệ thống
+
+Tùy chọn này hữu dụng trong trường hợp font bạn chọn không có trong hệ thống và bạn muốn sửa chữa sai lầm của mình bằng cách áp dụng font có trong danh sách font được liệt kê (có hỗ trợ tiếng Việt chẳng hạn).
+
+```
+set_font(font_family='DejaVu Sans')
 ```
