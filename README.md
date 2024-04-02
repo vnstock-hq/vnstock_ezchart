@@ -1,5 +1,22 @@
 # Giới thiệu
 
+<div id="logo" align="center">
+    <a href="http://vnstock.site?utm_source=vnstock_docs&utm_medium=start&utm_content=logo">
+        <img src="https://raw.githubusercontent.com/thinh-vu/vnstock/beta/docs/docs/assets/images/vnstock_logo_color.png" alt="vnstock_logo"/>
+    </a>
+</div>
+
+---
+
+<div id="badges" align="center">
+<img src="https://img.shields.io/pypi/pyversions/vnstock_ezchart?logoColor=brown&style=plastic" alt= "Version"/>
+<img src="https://img.shields.io/pypi/dm/vnstock_ezchart" alt="Download Badge"/>
+<img src="https://img.shields.io/github/last-commit/vnstock-hq/vnstock_ezchart" alt="Commit Badge"/>
+<img src="https://img.shields.io/github/license/vnstock-hq/vnstock_ezchart?color=red" alt="License Badge"/>
+</div>
+
+
+
 > `vnstock_ezchart` ra đời với một sứ mệnh đơn giản nhưng đầy ý nghĩa: Làm cho việc phân tích dữ liệu trở nên dễ dàng và tiện lợi hơn bao giờ hết đặc biệt là lĩnh vực tài chính/chứng khoán. `vnstock_ezchart` được phát triển như một công cụ bổ trợ cho gói dữ liệu vnstock, nhằm mục đích cung cấp tới cộng đồng một giải pháp toàn diện để biểu diễn và phân tích dữ liệu tài chính một cách dễ dàng, mà không yêu cầu người dùng phải am hiểu sâu về lập trình. Dữ liệu đầu vào của các hàm trong `vnstock_ezchart` nhận kiểu dữ liệu Python phổ biến như List, DataFrame, Series, Numpy array.
 
 Tôi hiểu rằng, để đưa ra những quyết định dù là đầu tư hay trong dự án nghiên cứu, việc trực quan hóa dữ liệu là không thể thiếu. Với `vnstock_ezchart` bạn có thể đáp ứng 80% nhu cầu biểu diễn dữ liệu hàng ngày của mình chỉ bằng cách thay đổi các tham số đầu vào của hàm để tùy biến hay đơn giản chỉ cần nạp dữ liệu để xem trước, sau đó quyết định tinh chỉnh để tạo ra biểu đồ đẹp mắt và chia sẻ.
