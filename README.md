@@ -31,7 +31,7 @@ Khám phá vnstock_ezchart hôm nay, đánh dâu ⭐ cho repo này và đừng q
 
 # Sử dụng
 
-Sử dụng demo notebook có trong thư mục docs hoặc link Google Colab dưới đây: 
+Sử dụng demo notebook có trong thư mục docs hoặc link Google Colab dưới đây và theo dõi trang tài liệu hướng dẫn [tại đây](https://docs.vnstock.site/integrate/vnstock_ezchart/#gioi-thieu):
 
 <a target="_blank" href="https://colab.research.google.com/github/vnstock-hq/vnstock_ezchart/blob/main/docs/vnstock_ezchart_demo.ipynb">
   <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
