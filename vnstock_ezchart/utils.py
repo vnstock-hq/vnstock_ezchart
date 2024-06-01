@@ -123,6 +123,8 @@ class Utils:
         """
         font_url = f'https://fonts.google.com/download?family={font_family.replace(" ", "+")}'
         response = requests.get(font_url, allow_redirects=True)
+        if response.status_code != 200:
+            raise Exception(f"Failed to download font: {font_family}")
         zip_path = os.path.join('fonts', f'{font_family}.zip')
         os.makedirs(os.path.dirname(zip_path), exist_ok=True)
 
