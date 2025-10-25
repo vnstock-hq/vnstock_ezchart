@@ -1,5 +1,6 @@
 from .config import *
 from .utils import Utils
+import matplotlib.ticker as mticker
 
 # This package serves as a comprehensive wrapper for Matplotlib, Seaborn, Squarify, and Wordcloud, 
 # designed to provide a fast, simple, and efficient user experience for routine data visualization tasks
@@ -129,9 +130,15 @@ class MPlot:
         if background_color:
             ax.set_facecolor(background_color)
         if xtick_format:
-            ax.xaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: xtick_format.format(x)))
+            formatter = mticker.FuncFormatter(
+                lambda x, _: xtick_format.format(x)
+            )
+            ax.xaxis.set_major_formatter(formatter)
         if ytick_format:
-            ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda y, _: ytick_format.format(y)))
+            formatter = mticker.FuncFormatter(
+                lambda y, _: ytick_format.format(y)
+            )
+            ax.yaxis.set_major_formatter(formatter)
         if tick_labelsize:
             ax.tick_params(axis='both', which='major', labelsize=tick_labelsize)
         if bar_edge_color:

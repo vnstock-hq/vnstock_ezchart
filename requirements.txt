@@ -1,9 +1,11 @@
-# Giả định bạn đang sử dụng môi trường Python nguyên bản
-squarify
-wordcloud
-requests
-vnstock
-matplotlib
-seaborn
-pandas
-openpyxl
+# Dependencies with version constraints for compatibility
+numpy>=2.0.0
+pandas>=2.0.0
+matplotlib>=3.5.0
+seaborn>=0.11.0
+squarify>=0.4.0
+wordcloud>=1.8.0
+requests>=2.25.0
+vnstock>=3.2.6
+openpyxl>=3.0.0
+cycler>=0.10.0
