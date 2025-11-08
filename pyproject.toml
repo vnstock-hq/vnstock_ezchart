@@ -14,7 +14,7 @@ requires-python = ">=3.10"
 dependencies = [
                 "squarify",
                 "wordcloud",
-                "vnstock",
+                "vnstock>=3.2.7",
                 "requests",
                 "openpyxl"
                 ]
