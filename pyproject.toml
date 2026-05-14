@@ -8,7 +8,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "vnstock_ezchart"
 version = "1.0.1"
-description = "A comprehensive wrapper for Matplotlib, Seaborn which designed to provide a fast, simple, and efficient user experience for routine data visualization tasks"
+description = "A production-ready, AI-agent-friendly charting toolkit for Vietnamese financial markets — built on Matplotlib, Seaborn & mplfinance with a Soft Premium styling engine, branded logo injection, and 20+ publication-quality chart types out of the box"
 readme = "README.md"
 authors = [{name = "Thinh Vu", email = "support@vnstocks.com"}]
 license = "MIT"
@@ -28,7 +28,7 @@ dependencies = [
     "matplotlib>=3.5.0",
     "seaborn>=0.11.0",
     "requests>=2.25.0",
-    "vnstock>=4.0.2",
+    "vnstock>=4.0.3",
     "openpyxl>=3.0.0",
     "cycler>=0.10.0",
     "mplfinance>=0.12.9b5",
