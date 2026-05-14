@@ -7,7 +7,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "vnstock_ezchart"
-version = "1.0.0"
+version = "1.0.1"
 description = "A comprehensive wrapper for Matplotlib, Seaborn which designed to provide a fast, simple, and efficient user experience for routine data visualization tasks"
 readme = "README.md"
 authors = [{name = "Thinh Vu", email = "support@vnstocks.com"}]
@@ -31,7 +31,7 @@ dependencies = [
     "vnstock>=4.0.2",
     "openpyxl>=3.0.0",
     "cycler>=0.10.0",
-    "mplfinance>=0.12.0",
+    "mplfinance>=0.12.9b5",
 ]
 
 [project.optional-dependencies]

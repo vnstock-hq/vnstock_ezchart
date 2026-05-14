@@ -2,7 +2,7 @@
 squarify
 wordcloud
 requests
-vnstock>=3.2.7
+vnstock>=4.0.3
 matplotlib
 seaborn
 pandas
