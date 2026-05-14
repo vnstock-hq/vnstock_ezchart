@@ -1,4 +1,4 @@
-# Giới thiệu
+# Giới thiệu vnstock_ezchart (About vnstock_ezchart)
 
 <div id="logo" align="center">
     <a href="http://vnstock.site?utm_source=vnstock_docs&utm_medium=start&utm_content=logo">
@@ -15,140 +15,230 @@
 <img src="https://img.shields.io/github/license/vnstock-hq/vnstock_ezchart?color=red" alt="License Badge"/>
 </div>
 
+*[English version below](#english-version)*
 
+> **Tầm nhìn:** `vnstock_ezchart` ra đời với sứ mệnh tạo ra **ngôn ngữ trực quan hoá dữ liệu chuyên nghiệp, chuẩn hoá** dành cho cộng đồng đầu tư tại Việt Nam.
 
-> `vnstock_ezchart` ra đời với một sứ mệnh đơn giản nhưng đầy ý nghĩa: Làm cho việc phân tích dữ liệu trở nên dễ dàng và tiện lợi hơn bao giờ hết đặc biệt là lĩnh vực tài chính/chứng khoán. `vnstock_ezchart` được phát triển như một công cụ bổ trợ cho gói dữ liệu vnstock, nhằm mục đích cung cấp tới cộng đồng một giải pháp toàn diện để biểu diễn và phân tích dữ liệu tài chính một cách dễ dàng, mà không yêu cầu người dùng phải am hiểu sâu về lập trình. Dữ liệu đầu vào của các hàm trong `vnstock_ezchart` nhận kiểu dữ liệu Python phổ biến như List, DataFrame, Series, Numpy array.
+Trong bối cảnh số đông nhà đầu tư đang dần tiếp cận với Python và API chứng khoán qua `vnstock`, việc tự viết code hoặc yêu cầu AI vẽ biểu đồ từ con số 0 thường tốn rất nhiều thời gian, tiêu tốn token, và khó duy trì được tính nhất quán về mặt thẩm mỹ. 
 
-Tôi hiểu rằng, để đưa ra những quyết định dù là đầu tư hay trong dự án nghiên cứu, việc trực quan hóa dữ liệu là không thể thiếu. Với `vnstock_ezchart` bạn có thể đáp ứng 80% nhu cầu biểu diễn dữ liệu hàng ngày của mình chỉ bằng cách thay đổi các tham số đầu vào của hàm để tùy biến hay đơn giản chỉ cần nạp dữ liệu để xem trước, sau đó quyết định tinh chỉnh để tạo ra biểu đồ đẹp mắt và chia sẻ.
+Để giải quyết vấn đề đó, `vnstock_ezchart` cung cấp một bộ công cụ tạo biểu đồ tĩnh (static charting) được tinh chỉnh theo triết lý **"Soft Premium"**. Thư viện giúp tự động hóa khâu xử lý thẩm mỹ, định vị thương hiệu (chèn logo), mang lại kết quả đầu ra sẵn sàng để nhúng trực tiếp vào các tài liệu, nghiên cứu, và báo cáo phân tích chuyên nghiệp.
 
-`vnstock_ezchart` sử dụng kết hợp các thư viện bao gồm (nhưng không giới hạn): matplotlib, seaborn, squarify, wordcloud và cung cấp tùy biến thông dụng và tiêu chuẩn hóa chúng để bạn có thể sử dụng dễ dàng thay vì phải dành nhiều công sức nghiên cứu hay loay hoay viết prompt với AI.
+---
 
-Khám phá vnstock_ezchart hôm nay, đánh dâu ⭐ cho repo này và đừng quên lan tỏa tới cộng đồng của bạn.
+## 🤖 Kiến trúc Agent-Ready
 
-# Cài đặt
+Thư viện được thiết kế tối ưu hóa 100% cho khả năng tương tác với AI Agent. Các hàm vẽ biểu đồ sử dụng Docstrings chuẩn Google-style bằng tiếng Anh, giúp các Agent hiểu rõ ngữ nghĩa và cú pháp ngay lập tức.
+Bạn có thể kết hợp thư viện này hoàn hảo với hệ sinh thái AI thông qua bộ tài liệu [Vnstock Agent Guide](https://github.com/vnstock-hq/vnstock-agent-guide/).
 
-`pip install vnstock-ezchart`
+---
 
-# Sử dụng
+## ⚡ Cài đặt & Khởi tạo
 
-Sử dụng demo notebook có trong thư mục docs hoặc link Google Colab dưới đây và theo dõi trang tài liệu hướng dẫn [tại đây](https://docs.vnstock.site/integrate/vnstock_ezchart/#gioi-thieu):
+```bash
+# Cài đặt thư viện mặc định
+pip install vnstock-ezchart
 
-<a target="_blank" href="https://colab.research.google.com/github/vnstock-hq/vnstock_ezchart/blob/main/docs/vnstock_ezchart_demo.ipynb">
-  <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
-</a>
-
-- Khởi tạo client: `ezchart = MPlot()`
-- Gọi hàm và biểu diễn dữ liệu: 
-
-```
-ezchart.combo_chart(candle_df['volume'] / 1000_000, candle_df['close']/1000,
-                  left_ylabel='Volume (M)', right_ylabel='Price (K)',
-                  color_palette='vnstock', palette_shuffle=True,
-                  show_legend=False,
-                  figsize=(10, 6),
-                  title='Khối lượng giao dịch và giá đóng cửa theo thời gian',
-                  title_fontsize=14
-                  )
-```
-![Combo chart](https://github.com/vnstock-hq/vnstock_ezchart/blob/main/docs/assets/images/combo_chart.png?raw=true)
-
-# Các dạng biểu đồ hỗ trợ
-- Bar
-- Line / Time series
-- Combo (Bar + Line)
-- Histogram
-- Boxplot
-- Pie
-- Scatter
-- Treemap
-- Word cloud
-- Table
-- Pairplot
-
-# Tiện ích
-
-## Xem hướng dẫn tích hợp: 
-```
-ezchart.help('bar)`
+# Cài đặt thêm các thành phần bổ trợ (Treemap, Wordcloud)
+pip install vnstock-ezchart[all]
 ```
 
-Kết quả trả về:
+### Mã nguồn Khởi tạo Tối giản
 
-```
-Vẽ biểu đồ cột với các tùy chỉnh chi tiết.
+Thay vì phải lặp lại thiết lập cấu hình màu sắc hay logo cho từng đồ thị, `vnstock_ezchart` thiết kế cấu trúc Global Theme để bạn chỉ cần khai báo một lần duy nhất.
 
-Tham số:
-    - data (pd.DataFrame hoặc pd.Series): Dữ liệu đầu vào dạng DataFrame hoặc Series.
-    - title (str): Tiêu đề của biểu đồ.
-    - title_fontsize (int): Cỡ chữ cho tiêu đề.
-    - xlabel (str): Nhãn cho trục X.
-    - ylabel (str): Nhãn cho trục Y.
-    - color_palette (str): Tên của bảng màu đã được định trước hoặc danh sách các màu tùy chỉnh. Mặc định là 'vnstock'. Các bảng màu có sẵn: 'percentage', 'amount', 'category', 'trend', 'flatui', 'vnstock', 'learn_anything'. Có thể liệt kê tất cả bảng màu với Utils.brand_palettes.keys().
-    - palette_shuffle (bool): Xáo trộn thứ tự màu sắc trong bảng màu, cho phép chọn màu ngẫu nhiên trong bảng màu để biểu diễn cho đến khi bạn ưng ý. Mặc định là False.
-    - grid (bool): Hiển thị lưới. Nhận True để hiện thị hoặc False để ẩn lưới.
-    - data_labels (bool): Hiển thị nhãn dữ liệu trên biểu đồ.
-    - data_label_format (str): Định dạng cho nhãn dữ liệu. Nhận các giá trị rút gọn như 1K, 1M, 1B, 1T tương ứng với 1 ngàn, 1 triệu, 1 tỷ, 1 nghìn tỷ.
-    - label_fontsize (int): Cỡ chữ cho nhãn trục X và Y.
-    - legend_title (str): Tiêu đề cho chú giải.
-    - show_legend (bool): Hiển thị chú giải. Nhận True để hiển thị hoặc False để ẩn chú giải.
-    - series_names (list): Danh sách tên cho các dải (series) dữ liệu trong biểu đồ. Nhận giá trị là 1 danh sách (list).
-    - font_name (str): Tên của font chữ muốn áp dụng.
-    - figsize (tuple): Kích thước của biểu đồ, ví dụ (10, 6).
-    - show_xaxis (bool): Hiển thị trục X. Nhận True để hiển thị hoặc False để ẩn trục X.
-    - show_yaxis (bool): Hiển thị trục Y. Nhận True để hiển thị hoặc False để ẩn trục Y.
-    - tick_labelsize (int): Cỡ chữ cho các nhãn trục.
-    - xtick_format (str): Định dạng cho nhãn trục X. Ví dụ định dạng số thập phân '{:.0f}'.
-    - ytick_format (str): Định dạng cho nhãn trục Y. Ví dụ định dạng phần trăm '{:.0%}'.
-    - tick_rotation (int): Góc quay cho các nhãn trục.
-    - xlim (tuple): Giới hạn cho trục X, ví dụ (0, 100).
-    - ylim (tuple): Giới hạn cho trục Y, ví dụ (0, 100).
-    - background_color (str): Màu nền cho biểu đồ.
-    - bar_edge_color (str): Màu viền cho các cột (bar) trong biểu đồ.
+```python
+from vnstock_ezchart import Chart
+
+# 1. Cài đặt Theme, Font & Ngôn ngữ toàn cục (Chỉ chạy 1 lần)
+# lang='vi' (mặc định) hoặc lang='en' cho nhãn tiếng Anh
+Chart.set_theme(theme_name='vnstock', font_name='Inter', lang='vi')
+
+# 2. Sinh biểu đồ siêu tốc từ dữ liệu pandas (Ví dụ: DataFrame hoặc Series)
+fig, ax = Chart.line(data, title="Tăng trưởng Lợi nhuận Hàng quý")
 ```
 
-## Tùy chọn về bảng màu
-### Áp dụng bảng màu để sử dụng Matplotlib
+---
 
-`Utils.apply_palette(color_palette='vnstock', palette_shuffle=False)`
+## 📈 Khả năng Phân tích Đầu tư Chuyên sâu
 
-Cho phép áp dụng bảng màu bạn chọn cho toàn môi trường làm việc (Jupyter Notbook/Google Colab). Bạn có thể tiếp tục sử dụng Matplotlib theo cách bạn thích với code bạn tạo ra nhưng giao diện sử dụng bảng màu được áp dụng. Bằng cách này bạn vừa có thể dễ dàng tạo ra giao diện đồ thị mình muốn trong khi thoải mái tùy biến biểu đồ.
+Lấy cảm hứng từ các nền tảng phân tích định lượng học thuật, `vnstock_ezchart` sở hữu khả năng biến hóa đa dạng để phục vụ vô vàn ngữ cảnh trong tài chính và chứng khoán.
 
-### Tạo ra bảng màu (cmap) tùy chỉnh từ các bộ màu có sẵn
+### Phân tích Kỹ thuật Nâng cao & Tâm lý Thị trường
+Khả năng "chồng lớp" (Multi-layer) nhiều chiều dữ liệu lên cùng một biểu đồ mà vẫn giữ được sự tinh tế:
 
+<p align="center">
+  <img src="./docs/assets/gallery/06_candlestick_advanced.png" width="49%" />
+  <img src="./docs/assets/gallery/13_seasonality_boxplot.png" width="49%" />
+  <img src="./docs/assets/gallery/12_sentiment_wordcloud.png" width="49%" />
+  <img src="./docs/assets/gallery/11_stock_screening_table.png" width="49%" />
+</p>
+
+### Quản trị Hiệu suất & Rủi ro
+Cung cấp góc nhìn tổ chức (Institutional-grade) về danh mục đầu tư:
+
+<p align="center">
+  <img src="./docs/assets/gallery/01_equity_curve.png" width="99%" />
+  <img src="./docs/assets/gallery/02_returns_heatmap.png" width="49%" />
+  <img src="./docs/assets/gallery/04_rolling_volatility.png" width="49%" />
+  <img src="./docs/assets/gallery/05_returns_distribution.png" width="49%" />
+  <img src="./docs/assets/gallery/03_yearly_returns.png" width="49%" />
+</p>
+
+### Phân bổ & Đánh giá Danh mục
+Trực quan hóa cấu trúc danh mục và tương quan thị trường đa lớp tài sản:
+
+<p align="center">
+  <img src="./docs/assets/gallery/07_portfolio_treemap.png" width="49%" />
+  <img src="./docs/assets/gallery/08_correlation_scatter.png" width="49%" />
+  <img src="./docs/assets/gallery/10_multi_asset_line.png" width="49%" />
+  <img src="./docs/assets/gallery/14_sectors_pairplot.png" width="49%" />
+</p>
+
+### Dữ liệu Thị trường & Phân tích Doanh nghiệp
+Khắc họa sâu sắc bức tranh tài chính doanh nghiệp và thanh khoản thị trường:
+
+<p align="center">
+  <img src="./docs/assets/gallery/09_fundamental_combo.png" width="99%" />
+  <img src="./docs/assets/gallery/18_cash_flow_stacked.png" width="49%" />
+  <img src="./docs/assets/gallery/17_financial_ratios.png" width="49%" />
+  <img src="./docs/assets/gallery/15_orderbook_volume.png" width="49%" />
+  <img src="./docs/assets/gallery/16_foreign_trade.png" width="49%" />
+</p>
+
+### Thẻ Tóm tắt Cổ phiếu (Stock Summary Card)
+Hiển thị thông tin tóm tắt về cổ phiếu theo thiết kế giao diện UI hiện đại (Soft Premium) tương tự các website tài chính hàng đầu.
+
+<p align="center">
+  <img src="./docs/assets/gallery/19_summary_card_positive.png" width="49%" />
+  <img src="./docs/assets/gallery/20_summary_card_negative.png" width="49%" />
+</p>
+
+### Trực quan hóa Backtesting (Backtesting Visualization)
+Cung cấp bộ biểu đồ đầy đủ thông tin cho chiến lược backtest: nến nhật, khối lượng, điểm vào/ra lệnh, đường cong lợi nhuận và drawdown trên cùng một trục thời gian.
+
+<p align="center">
+  <img src="./docs/assets/gallery/23_backtest_vi.png" width="99%" />
+</p>
+
+---
+
+## 📂 Example Gallery - Bộ Sưu Tập Kịch Bản Chuyên Nghiệp
+
+Mã nguồn mẫu đã được chia nhỏ thành các nhóm ứng dụng riêng biệt giúp bạn dễ dàng theo dõi, bảo trì và sử dụng:
+
+- **[`examples/01_performance_risk.py`](examples/01_performance_risk.py):** Quản trị Hiệu suất & Rủi ro.
+- **[`examples/02_technical_analysis.py`](examples/02_technical_analysis.py):** Phân tích Kỹ thuật.
+- **[`examples/03_portfolio_management.py`](examples/03_portfolio_management.py):** Phân bổ Danh mục.
+- **[`examples/04_market_data.py`](examples/04_market_data.py):** Dữ liệu Thị trường.
+- **[`examples/05_enterprise_analysis.py`](examples/05_enterprise_analysis.py):** Phân tích Doanh nghiệp.
+- **[`examples/06_summary_cards.py`](examples/06_summary_cards.py):** Thẻ Tóm tắt Cổ phiếu.
+- **[`examples/07_backtest.py`](examples/07_backtest.py):** Trực quan hóa kiểm thử - Backtesting.
+
+Bạn có thể chạy toàn bộ các kịch bản để sinh ảnh song ngữ (VI & EN):
+```bash
+python3 examples/run_all.py
 ```
-Utils.create_cmap('vnstock')
+
+---
+
+<a id="english-version"></a>
+# English Version
+
+> **Vision:** `vnstock_ezchart` aims to provide a **standardized and professional data visualization language** for the Vietnamese investment community.
+
+`vnstock_ezchart` provides a suite of static charting tools refined under the **"Soft Premium"** philosophy. It automates aesthetic processing and branding, delivering output ready for professional reports.
+
+---
+
+## 🤖 Agent-Ready Architecture
+
+Optimized for AI Agents with English Google-style Docstrings. Compatible with the [Vnstock Agent Guide](https://github.com/vnstock-hq/vnstock-agent-guide/).
+
+---
+
+## ⚡ Installation & Initialization
+
+```bash
+pip install vnstock-ezchart
+pip install vnstock-ezchart[all]
 ```
 
-![color_map](https://github.com/vnstock-hq/vnstock_ezchart/blob/main/docs/assets/images/color_map.png?raw=true)
+```python
+from vnstock_ezchart import Chart
+# 1. Setup Global Theme, Font & Language (Run once)
+# lang='vi' (default) or lang='en' for English labels
+Chart.set_theme(theme_name='vnstock', font_name='Inter', lang='en')
 
-### Liệt kê bảng màu mặc định trong Matplotlib, Seaborn
-
-Cho phép bạn liệt kê tất cả bảng màu mặc định đi kèm Matplotlib, sử dụng khi áp dụng màu cho heatmap.
-
-```
-Utils.list_cmap ()
-```
-
-## Tùy chọn về font chữ
-
-### Liệt kê các font có sẵn
-
-Để liệt kê các font có trong môi trường làm việc được nhận diện bởi Matplotlib, bạn sử dụng câu lệnh dưới đây. Tùy chọn này cho phép bạn sử dụng đúng font được hỗ trợ, hữu ích trong trường hợp bạn dùng Google Colab không có sẵn các font như trên máy tính của mình.
-```
-Utils.list_font()
+# 2. Superfast chart generation from pandas data (E.g. DataFrame or Series)
+fig, ax = Chart.line(data, title="Quarterly Profit Growth")
 ```
 
-### Tải font chữ dế dàng
+---
 
-Tải thêm font mới bằng câu lệnh dưới đây, cho phép tải mới font về thư mục làm việc từ Google Fonts. Bạn có thể sử dụng đường dẫn font để cài đặt hiển thị trong biểu đồ Word Cloud.
-```
-Utils.download_font('Roboto')
-```
+## 📈 Investment Analysis Showcase
 
-### Áp dụng font chữ lên hệ thống
+### Advanced Technical Analysis & Sentiment
+<p align="center">
+  <img src="./docs/assets/gallery/06_candlestick_advanced_en.png" width="49%" />
+  <img src="./docs/assets/gallery/13_seasonality_boxplot_en.png" width="49%" />
+  <img src="./docs/assets/gallery/12_sentiment_wordcloud_en.png" width="49%" />
+  <img src="./docs/assets/gallery/11_stock_screening_table_en.png" width="49%" />
+</p>
 
-Tùy chọn này hữu dụng trong trường hợp font bạn chọn không có trong hệ thống và bạn muốn sửa chữa sai lầm của mình bằng cách áp dụng font có trong danh sách font được liệt kê (có hỗ trợ tiếng Việt chẳng hạn).
+### Performance & Risk Management
+<p align="center">
+  <img src="./docs/assets/gallery/01_equity_curve_en.png" width="99%" />
+  <img src="./docs/assets/gallery/02_returns_heatmap_en.png" width="49%" />
+  <img src="./docs/assets/gallery/04_rolling_volatility_en.png" width="49%" />
+  <img src="./docs/assets/gallery/05_returns_distribution_en.png" width="49%" />
+  <img src="./docs/assets/gallery/03_yearly_returns_en.png" width="49%" />
+</p>
 
-```
-set_font(font_family='DejaVu Sans')
+### Portfolio Allocation & Evaluation
+<p align="center">
+  <img src="./docs/assets/gallery/07_portfolio_treemap_en.png" width="49%" />
+  <img src="./docs/assets/gallery/08_correlation_scatter_en.png" width="49%" />
+  <img src="./docs/assets/gallery/10_multi_asset_line_en.png" width="49%" />
+  <img src="./docs/assets/gallery/14_sectors_pairplot_en.png" width="49%" />
+</p>
+
+### Market Data & Enterprise Analysis
+<p align="center">
+  <img src="./docs/assets/gallery/09_fundamental_combo_en.png" width="99%" />
+  <img src="./docs/assets/gallery/18_cash_flow_stacked_en.png" width="49%" />
+  <img src="./docs/assets/gallery/17_financial_ratios_en.png" width="49%" />
+  <img src="./docs/assets/gallery/15_orderbook_volume_en.png" width="49%" />
+  <img src="./docs/assets/gallery/16_foreign_trade_en.png" width="49%" />
+</p>
+
+### Stock Summary Card
+<p align="center">
+  <img src="./docs/assets/gallery/19_summary_card_positive_en.png" width="49%" />
+  <img src="./docs/assets/gallery/20_summary_card_negative_en.png" width="49%" />
+</p>
+
+### Backtesting Visualization
+Provides a comprehensive chart for backtesting strategies: candlesticks, volume, entry/exit points, equity curve, and drawdown on a unified timeline.
+
+<p align="center">
+  <img src="./docs/assets/gallery/23_backtest_en.png" width="99%" />
+</p>
+
+---
+
+## 📂 Example Gallery - Professional Scenario Collection
+
+The sample source code has been broken down into separate application groups, making it easy for you to track, maintain, and use:
+
+- **[`examples/01_performance_risk.py`](examples/01_performance_risk.py):** Performance & Risk Management.
+- **[`examples/02_technical_analysis.py`](examples/02_technical_analysis.py):** Technical Analysis.
+- **[`examples/03_portfolio_management.py`](examples/03_portfolio_management.py):** Portfolio Allocation.
+- **[`examples/04_market_data.py`](examples/04_market_data.py):** Market Data.
+- **[`examples/05_enterprise_analysis.py`](examples/05_enterprise_analysis.py):** Enterprise Analysis.
+- **[`examples/06_summary_cards.py`](examples/06_summary_cards.py):** Stock Summary Card.
+- **[`examples/07_backtest.py`](examples/07_backtest.py):** Backtesting Visualization.
+
+You can run all the scripts above simultaneously to output the bilingual image collection:
+```bash
+python3 examples/run_all.py
 ```

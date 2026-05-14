@@ -1,2 +1,2 @@
 from .utils import *
-from .mplot import *
+from .static.chart import Chart, MPlot

@@ -1,8 +1,9 @@
+from typing import Union, List, Optional
 from .config import *
 
 class Utils:
     """
-    Class (lớp) chứa các phương thức tiện ích cho việc tùy chỉnh và tùy biến biểu đồ.
+    Utility class for customizing and manipulating charts.
     """
     def __init__(self):
         pass
@@ -48,14 +49,14 @@ class Utils:
                     '#BB191F'   # Red
                         ],
         'stock': [   # 65% luminant
-                    '#70db8f', # Xanh lá - Tăng
-                    '#ff4d4d', # Đỏ
-                    '#c44dff', # Tím - Trần
-                    '#4ddbff', # Xanh lơ - Sàn
-                    #  '#3385ff', # Xanh dương
+                    '#70db8f', # Green - Increasing
+                    '#ff4d4d', # Red - Decreasing
+                    '#c44dff', # Purple - Ceiling
+                    '#4ddbff', # Cyan - Floor
+                    #  '#3385ff', # Blue
                 ],
         'flatui': ['#FEDD78', '#348DC1', '#BA516B', '#4FA487', '#9B59B6', '#613F66'],
-        'vnstock': ['#2eb855', '#257CFF', '#DD390D', '#7A7A7A', '#FFFFFF'],
+        'vnstock': ['#66BB6A', '#64B5F6', '#FFB74D', '#E57373', '#BA68C8', '#90A4AE'],
         'learn_anything': ['#002E5D', '#00FF84', '#FFD700', '#808080'],
         'beach' : ['#217074', '#37745B', '#8B9D77', '#E7EAEF', '#EDC5AB'],
         'forest' : ['#162e1a', '#437a38', '#97b261', '#c5d7d7', '#536b69']
@@ -63,13 +64,13 @@ class Utils:
     }
 
     @classmethod
-    def apply_palette(cls, color_palette, palette_shuffle=False):
+    def apply_palette(cls, color_palette: Union[str, List[str]], palette_shuffle: bool = False) -> None:
         """
-        Áp dụng bảng màu cho biểu đồ, có khả năng xáo trộn màu sắc nếu cần.
+        Applies a color palette to the current matplotlib/seaborn context.
 
-        Tham số:
-            color_palette (str hoặc list): Tên của bảng màu đã được định trước hoặc danh sách các màu tùy chỉnh.
-            palette_shuffle (bool): Nếu là True, sẽ xáo trộn thứ tự các màu trong bảng màu.
+        Args:
+            color_palette (Union[str, List[str]]): The name of a predefined palette or a custom list of hex colors.
+            palette_shuffle (bool): If True, shuffles the colors in the palette randomly.
         """
         if isinstance(color_palette, str):
             palette = cls.brand_palettes.get(color_palette, None)
@@ -89,23 +90,46 @@ class Utils:
         plt.rcParams['axes.prop_cycle'] = cycler('color', palette_list)
 
     @staticmethod
-    def readable_format(num, fmt=None):
+    def readable_format(num: Union[int, float], fmt: Optional[str] = None) -> str:
         """
-        Convert a number into a human-readable format, e.g., 1K, 1M, etc.
+        Converts a large number into a human-readable string format (e.g., 1.5K, 2.0M).
+        
+        Args:
+            num (Union[int, float]): The number to format.
+            fmt (Optional[str]): A custom format string to apply.
+            
+        Returns:
+            str: The formatted human-readable string.
         """
+        import pandas as pd
+        if pd.isna(num):
+            return ""
+            
         magnitude = 0
-        while abs(num) >= 1000:
+        temp_num = num
+        while abs(temp_num) >= 1000:
             magnitude += 1
-            num /= 1000.0
-        # Allow custom format to be applied
+            temp_num /= 1000.0
+            
+        suffix = ["", "K", "M", "B", "T"][magnitude]
         if fmt and isinstance(fmt, str):
-            return f'{num:.1f}{["", "K", "M", "B", "T"][magnitude]}'.format(fmt)
-        return f'{num:.1f}{["", "K", "M", "B", "T"][magnitude]}'
+            try:
+                # If percentage, use original num without K/M/B scaling
+                if '%' in fmt:
+                    return fmt.format(num)
+                return fmt.format(temp_num) + suffix
+            except Exception:
+                pass
+        return f'{temp_num:.1f}{suffix}'
 
     @staticmethod
-    def list_font():
+    def list_font() -> pd.Series:
         """
-        Liệt kê các font hiện có được Matplotlib nhận diện. Sử dụng đặc biệt là trong môi trường Google Colab để chọn font.
+        Lists all fonts currently recognized by Matplotlib. Useful for selecting
+        available fonts, especially in cloud environments like Google Colab.
+        
+        Returns:
+            pd.Series: A pandas Series containing the names of all available fonts.
         """
         font_list = []
         for font in font_manager.fontManager.ttflist:
@@ -114,12 +138,12 @@ class Utils:
         return pd.Series(font_list)
 
     @staticmethod
-    def download_font(font_family):
+    def download_font(font_family: str) -> None:
         """
-        Downloads a Google font and adds it to matplotlib's font list.
+        Downloads a font from Google Fonts and registers it with Matplotlib.
 
         Args:
-            font_family (str): The family name of the Google font to download.
+            font_family (str): The exact font family name as it appears on Google Fonts.
         """
         font_url = f'https://fonts.google.com/download?family={font_family.replace(" ", "+")}'
         response = requests.get(font_url, allow_redirects=True)
@@ -131,7 +155,8 @@ class Utils:
         with open(zip_path, 'wb') as font_file:
             font_file.write(response.content)
 
-        shutil.unpack_archive(zip_path, 'fonts')
+        extract_dir = os.path.join('fonts', font_family)
+        shutil.unpack_archive(zip_path, extract_dir)
         os.remove(zip_path)
 
         # Add the font to matplotlib's font list
@@ -144,29 +169,38 @@ class Utils:
                     plt.rcParams['font.family'] = font_family
 
     @staticmethod
-    def set_font(font_family):
+    def set_font(font_family: str) -> None:
         """
-        Ghi đè tùy chọn cài đặt một font cố định vào hệ thống. Sử dụng trong trường hợp môi trường Google Colab không có sẵn font mong muốn.
-        Chọn DejaVu Sans trong Colab có hỗ trợ tiếng Việt.
+        Overrides the global Matplotlib font family setting.
+        Useful when the environment (like Colab) does not have the desired font.
+        
+        Args:
+            font_family (str): The name of the font family to apply globally.
         """
         plt.rcParams['font.family'] = font_family
 
     @staticmethod
-    def list_cmap ():
+    def list_cmap() -> pd.Series:
         """
-        Liệt kê các bảng màu cmap có sẵn trong hệ thống, sử dụng trong các tùy chọn có tham số cmap, ví dụ 'Set3'
+        Lists all available colormaps (cmaps) registered in Matplotlib.
+        
+        Returns:
+            pd.Series: A pandas Series containing the names of available cmaps.
         """
         import matplotlib.pyplot as plt
         return pd.Series(plt.cm.datad)
     
     @classmethod
-    def create_cmap (cls, color_palette, cmap_name='custom'):
+    def create_cmap(cls, color_palette: Union[str, List[str]], cmap_name: str = 'custom'):
         """
-        Tạo ra colormap từ danh sách các màu được nhập vào, ví dụ sử dụng hexcode
+        Creates and registers a custom Matplotlib colormap from a list of colors.
         
-        Tham số:
-            color_palette: Tên một bảng màu có sẵn từ thư viện hoặc 1 danh sách các mã màu
-            cmap_name: tên của cmap muốn tạo ra để đăng ký với Matplotlib
+        Args:
+            color_palette (Union[str, List[str]]): The name of a predefined palette or a list of hex codes.
+            cmap_name (str): The name to assign to the newly created colormap.
+            
+        Returns:
+            matplotlib.colors.LinearSegmentedColormap: The generated colormap object.
         """
         from matplotlib.colors import LinearSegmentedColormap
 
