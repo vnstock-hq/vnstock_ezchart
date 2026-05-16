@@ -47,6 +47,7 @@ class SpecializedMixin:
             return fig, ax
         @classmethod
         def heatmap(cls, data: 'pd.DataFrame', **kwargs) -> Tuple['plt.Figure', 'plt.Axes']:
+            show_plot = kwargs.pop('show', True)
             """
             Represents data as a heatmap.
 
@@ -77,7 +78,8 @@ class SpecializedMixin:
             ax.tick_params(length=0)
             ax.grid(False)
         
-            plt.show()
+            if show_plot and plt.get_backend().lower() != 'agg':
+                plt.show()
             cls._inject_logo(fig, kwargs)
             return fig, ax
         @classmethod
@@ -108,8 +110,14 @@ class SpecializedMixin:
 
             custom_cmap = Utils.create_cmap(colors)
 
+            # Find Inter font
+            inter_path = os.path.join(os.path.dirname(BASE_DIR), 'assets', 'fonts', 'Inter-Regular.ttf')
+            font_kwargs = {}
+            if os.path.exists(inter_path):
+                font_kwargs['font_path'] = inter_path
+
             # Generate word cloud
-            wordcloud = WordCloud(width=width, height=height, background_color="white", colormap=custom_cmap, max_words=max_words).generate(text)
+            wordcloud = WordCloud(width=width, height=height, background_color="white", colormap=custom_cmap, max_words=max_words, **font_kwargs).generate(text)
 
             # Create plot
             fig, ax = plt.subplots(figsize=figsize)
@@ -133,7 +141,7 @@ class SpecializedMixin:
                     plt.savefig(**savefig)
                 else:
                     plt.savefig(savefig)
-            if show:
+            if show and plt.get_backend().lower() != 'agg':
                 plt.show()
             
             return fig, ax
@@ -205,6 +213,12 @@ class SpecializedMixin:
             the_table.set_fontsize(12)
             the_table.scale(1, 1)
 
+            import matplotlib.colors as mcolors
+            palette_name = cls._global_theme
+            palette = Utils.brand_palettes.get(palette_name, Utils.brand_palettes['vnstock'])
+            pos_color = palette[0] if len(palette) > 0 else '#66BB6A'
+            header_bg = mcolors.to_rgba(pos_color, alpha=0.15)
+
             for (row, col), cell in the_table.get_celld().items():
                 cell.set_height(0.08)
                 cell.set_text_props(color="#475569")
@@ -212,10 +226,10 @@ class SpecializedMixin:
             
                 if row == 0 and header:
                     # Header styling
-                    cell.set_edgecolor("#66BB6A") # Vnstock Soft Green for header border
-                    cell.set_facecolor("#E8F5E9") # Very light green background
+                    cell.set_edgecolor(pos_color) 
+                    cell.set_facecolor(header_bg) 
                     cell.set_linewidth(1.5)
-                    cell.set_text_props(weight="bold", color="#1B5E20")
+                    cell.set_text_props(weight="bold", color="#0f172a")
                 elif col == -1: # Row labels if any
                     cell.set_linewidth(0)
                 elif row > 0:
@@ -245,7 +259,7 @@ class SpecializedMixin:
                 else:
                     plt.savefig(savefig)
 
-            if show:
+            if show and plt.get_backend().lower() != 'agg':
                 plt.show(block=False)
 
             plt.close()
@@ -275,6 +289,12 @@ class SpecializedMixin:
             from matplotlib.patches import FancyBboxPatch
             import matplotlib.patheffects as path_effects
             
+            palette_name = kwargs.get('color_palette', cls._global_theme)
+            palette = Utils.brand_palettes.get(palette_name, Utils.brand_palettes['vnstock'])
+            pos_color = palette[0] if len(palette) > 0 else '#10b981'
+            neg_color = palette[3] if len(palette) > 3 else '#ef4444'
+            sec_color = palette[2] if len(palette) > 2 else '#f59e0b'
+            
             figsize = kwargs.get('figsize', (9, 5))
             fig = plt.figure(figsize=figsize, facecolor='#f8fafc')
             
@@ -303,7 +323,7 @@ class SpecializedMixin:
             
             # Price Change
             is_positive = price_change >= 0
-            change_color = '#10b981' if is_positive else '#ef4444'
+            change_color = pos_color if is_positive else neg_color
             change_sign = '+' if is_positive else ''
             arrow = '▲' if is_positive else '▼'
             change_text = f"{arrow} {change_sign}{price_change:,.0f} ({change_sign}{price_change_pct:.2f}%)"
@@ -318,8 +338,8 @@ class SpecializedMixin:
             l = labels.get(lang, labels['vi'])
             
             # Signal Ribbon
-            signal_color_map = {'Tích cực': '#10b981', 'Tiêu cực': '#ef4444', 'Trung tính': '#f59e0b',
-                                'Positive': '#10b981', 'Negative': '#ef4444', 'Neutral': '#f59e0b'}
+            signal_color_map = {'Tích cực': pos_color, 'Tiêu cực': neg_color, 'Trung tính': sec_color,
+                                'Positive': pos_color, 'Negative': neg_color, 'Neutral': sec_color}
             s_color = signal_color_map.get(signal, '#64748b')
             s_bg = s_color + '1A' # 10% opacity
             

@@ -12,16 +12,22 @@ from vnstock_ezchart import Chart
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--lang', type=str, default='vi', choices=['vi', 'en'])
+parser.add_argument('--theme', type=str, default='vnstock', choices=['vnstock', 'academic', 'minimal', 'flatui'])
 args, _ = parser.parse_known_args()
 
-out_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'docs', 'assets', 'gallery'))
+out_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'docs', 'assets', 'gallery', args.theme, args.lang))
 os.makedirs(out_dir, exist_ok=True)
 
-Chart.set_theme(theme_name='vnstock', font_name='Inter', lang=args.lang)
+Chart.set_theme(theme_name=args.theme, font_name='Inter', lang=args.lang)
+
+from vnstock_ezchart.utils import Utils
+theme_colors = Utils.brand_palettes[args.theme]
+c1 = theme_colors[0]
+c2 = theme_colors[1 % len(theme_colors)]
+c3 = theme_colors[2 % len(theme_colors)]
 
 def save_chart(fig, name):
-    suffix = '_en' if args.lang == 'en' else ''
-    fig.savefig(os.path.join(out_dir, f'{name}{suffix}.png'), bbox_inches='tight', dpi=150)
+    fig.savefig(os.path.join(out_dir, f'{name}.png'), bbox_inches='tight', dpi=150)
     plt.close(fig)
 
 print(f"Đang tạo biểu đồ Portfolio Management ({args.lang})...")
@@ -39,7 +45,7 @@ fig, ax = Chart.treemap(
     values=weights, 
     labels=tickers, 
     title=title_7,
-    color_palette='flatui'
+    color_palette=args.theme
 )
 save_chart(fig, '07_portfolio_treemap')
 
@@ -58,10 +64,10 @@ fig, ax = Chart.scatter(
     alpha=0.5,
     xtick_format='{:.1%}',
     ytick_format='{:.1%}',
-    color_palette=['#BA68C8']
+    color_palette=[c1]
 )
 m, b = np.polyfit(df_scatter['Benchmark'].dropna(), df_scatter['Strategy'].dropna(), 1)
-ax.plot(df_scatter['Benchmark'], m*df_scatter['Benchmark'] + b, color='#E57373', linewidth=2)
+ax.plot(df_scatter['Benchmark'], m*df_scatter['Benchmark'] + b, color=c2, linewidth=2)
 save_chart(fig, '08_correlation_scatter')
 
 # 9. Multi-Asset Line
@@ -83,7 +89,7 @@ fig, ax = Chart.line(
     grid=True,
     show_legend=True,
     legend_title=legend_title_9,
-    color_palette=['#66BB6A', '#90A4AE', '#FFB74D']
+    color_palette=[c1, c2, c3]
 )
 save_chart(fig, '10_multi_asset_line')
 
@@ -98,8 +104,8 @@ g = Chart.pairplot(
     sectors, 
     diag_kind='kde',
     corner=True,
-    plot_kws={'alpha': 0.6, 'color': '#BA68C8'},
-    diag_kws={'color': '#66BB6A'}
+    plot_kws={'alpha': 0.6, 'color': c1},
+    diag_kws={'color': c2}
 )
 title_10 = 'Sector Returns Correlation' if args.lang == 'en' else 'Tương quan Lợi nhuận giữa các Nhóm ngành'
 g.figure.suptitle(title_10, y=1.02, fontweight="black", fontsize=16)

@@ -12,16 +12,24 @@ from vnstock_ezchart import Chart
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--lang', type=str, default='vi', choices=['vi', 'en'])
+parser.add_argument('--theme', type=str, default='vnstock', choices=['vnstock', 'academic', 'minimal', 'flatui'])
 args, _ = parser.parse_known_args()
 
-out_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'docs', 'assets', 'gallery'))
+out_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'docs', 'assets', 'gallery', args.theme, args.lang))
 os.makedirs(out_dir, exist_ok=True)
 
-Chart.set_theme(theme_name='vnstock', font_name='Inter', lang=args.lang)
+Chart.set_theme(theme_name=args.theme, font_name='Inter', lang=args.lang)
+
+from vnstock_ezchart.utils import Utils
+theme_colors = Utils.brand_palettes[args.theme]
+c1 = theme_colors[0]
+c2 = theme_colors[1 % len(theme_colors)]
+c3 = theme_colors[2 % len(theme_colors)]
+c_pos = theme_colors[0]
+c_neg = theme_colors[3] if len(theme_colors) > 3 else theme_colors[1]
 
 def save_chart(fig, name):
-    suffix = '_en' if args.lang == 'en' else ''
-    fig.savefig(os.path.join(out_dir, f'{name}{suffix}.png'), bbox_inches='tight', dpi=150)
+    fig.savefig(os.path.join(out_dir, f'{name}.png'), bbox_inches='tight', dpi=150)
     plt.close(fig)
 
 print(f"Đang tạo biểu đồ Enterprise Analysis ({args.lang})...")
@@ -43,7 +51,7 @@ fig, ax1, ax2 = Chart.combo(
     title=title_9, 
     left_ylabel=left_ylabel_9, 
     right_ylabel=margin_label,
-    color_palette=['#64B5F6', '#FFB74D']
+    color_palette=[c1, c2]
 )
 save_chart(fig, '09_fundamental_combo')
 
@@ -64,7 +72,7 @@ fig, ax = Chart.bar(
     data_label_format='{:.1f}',
     data_label_fontsize=9,
     show_legend=True,
-    color_palette=['#64B5F6', '#FFB74D']
+    color_palette=[c1, c2]
 )
 save_chart(fig, '17_financial_ratios')
 
@@ -113,8 +121,8 @@ fig, ax = Chart.bar(
     data_label_color='#ffffff',
     data_label_fontsize=9,
     show_yaxis=False,
-    color_palette=['#66BB6A', '#E57373', '#FFB74D'],
+    color_palette=[c_pos, c_neg, c3],
     grid=True
 )
-ax.axhline(0, color='#94a3b8', linewidth=1.5)
+ax.axhline(0, color=c3, linewidth=1.5)
 save_chart(fig, '18_cash_flow_stacked')

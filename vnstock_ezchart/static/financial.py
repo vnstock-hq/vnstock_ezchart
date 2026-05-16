@@ -98,11 +98,26 @@ class FinancialMixin:
                     
             if subplots:
                 panel_idx = 2 if volume else 1
-                for subplot in subplots:
-                    if isinstance(subplot, dict):
-                        apds.append(mpf.make_addplot(subplot['data'], type=subplot.get('type', 'line'), color=subplot.get('color', None), panel=panel_idx, secondary_y=subplot.get('secondary_y', False), ylabel=subplot.get('ylabel', ''), width=subplot.get('width', 1.0)))
-                    else:
-                        apds.append(mpf.make_addplot(subplot, type='line', panel=panel_idx, width=1.0))
+                for subplot_group in subplots:
+                    if not isinstance(subplot_group, (list, tuple)):
+                        subplot_group = [subplot_group]
+                        
+                    for subplot in subplot_group:
+                        if isinstance(subplot, dict):
+                            kwargs_addplot = {
+                                'type': subplot.get('type', 'line'),
+                                'panel': panel_idx,
+                                'secondary_y': subplot.get('secondary_y', False),
+                                'width': subplot.get('width', 1.0)
+                            }
+                            if 'color' in subplot and subplot['color'] is not None:
+                                kwargs_addplot['color'] = subplot['color']
+                            if 'ylabel' in subplot and subplot['ylabel']:
+                                kwargs_addplot['ylabel'] = subplot['ylabel']
+                                
+                            apds.append(mpf.make_addplot(subplot['data'], **kwargs_addplot))
+                        else:
+                            apds.append(mpf.make_addplot(subplot, type='line', panel=panel_idx, width=1.0))
                     panel_idx += 1
                 
             # If we added subplots, we need to adjust panel_ratios
@@ -113,18 +128,23 @@ class FinancialMixin:
                 for _ in subplots:
                     panel_ratios.append(1.5)
             
+            is_en = getattr(cls, '_global_lang', 'vi') == 'en'
+            vol_label = 'Volume' if is_en else 'Khối lượng'
+            price_label = 'Price' if is_en else 'Giá'
+
             mpf_kwargs = {
                 'type': 'candle', 
                 'volume': volume, 
                 'style': s,
                 'figsize': figsize,
                 'title': "",
-                'ylabel': 'Giá',
-                'ylabel_lower': 'Khối lượng' if volume else '',
+                'ylabel': price_label,
+                'ylabel_lower': vol_label if volume else '',
                 'returnfig': True,
                 'tight_layout': True,
                 'xrotation': 0,
             }
+            show_plot = kwargs.pop('show', True)
             if apds:
                 mpf_kwargs['addplot'] = apds
             if len(panel_ratios) > 1:
@@ -147,10 +167,10 @@ class FinancialMixin:
                     return f'{x*1e-3:.0f}K'
                 return f'{x:.0f}'
             
-            for ax in axes:
+            for i, ax in enumerate(axes):
                 ylabel = ax.get_ylabel()
                 if 'Khối lượng' in ylabel or 'Volume' in ylabel:
-                    ax.set_ylabel('Khối lượng', fontsize=12, fontweight='medium', color=text_color, labelpad=10)
+                    ax.set_ylabel(vol_label, fontsize=12, fontweight='medium', color=text_color, labelpad=10)
                     ax.yaxis.set_major_formatter(mticker.FuncFormatter(format_volume))
                     if hasattr(ax.yaxis, 'offsetText'):
                         ax.yaxis.offsetText.set_visible(False)
@@ -158,8 +178,10 @@ class FinancialMixin:
                         patch.set_edgecolor('#FFFFFF')
                         patch.set_linewidth(0.5)
                 else:
-                    ax.set_ylabel('Giá', fontsize=12, fontweight='medium', color=text_color, labelpad=10)
-                    
+                    if i in [0, 1] and not ylabel:
+                        ax.set_ylabel(price_label, fontsize=12, fontweight='medium', color=text_color, labelpad=10)
+                    elif ylabel:
+                        ax.set_ylabel(ylabel, fontsize=12, fontweight='medium', color=text_color, labelpad=10)
                 # Soft spines
                 ax.spines['top'].set_visible(False)
                 ax.spines['right'].set_visible(False)
@@ -168,7 +190,8 @@ class FinancialMixin:
             
             # Add extra padding for the title
             plt.subplots_adjust(top=0.92)
-            plt.show()
+            if show_plot and plt.get_backend().lower() != 'agg':
+                plt.show()
             cls._inject_logo(fig, kwargs)
             return fig, axes
         @classmethod
@@ -209,8 +232,9 @@ class FinancialMixin:
             # Plot Drawdown
             running_max = data.cummax()
             drawdown = (data - running_max) / running_max
-            ax2.fill_between(drawdown.index, drawdown.values, 0, color='#ef4444', alpha=0.3)
-            ax2.plot(drawdown.index, drawdown.values, color='#ef4444', linewidth=1)
+            drawdown_color = palette[3] if len(palette) > 3 else '#ef4444'
+            ax2.fill_between(drawdown.index, drawdown.values, 0, color=drawdown_color, alpha=0.3)
+            ax2.plot(drawdown.index, drawdown.values, color=drawdown_color, linewidth=1)
         
             style_kwargs = cls._filter_plot_kwargs(kwargs)
             cls.apply_chart_style(ax1, title=title, ylabel='Cumulative Return', show_xaxis=False, show_legend=True, **style_kwargs)
@@ -251,7 +275,13 @@ class FinancialMixin:
             pivot = pivot[range(1, 13)]
             pivot.columns = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
         
-            cmap = sns.diverging_palette(10, 130, as_cmap=True)
+            from matplotlib.colors import LinearSegmentedColormap
+            palette_name = kwargs.get('color_palette', cls._global_theme)
+            palette = Utils.brand_palettes.get(palette_name, Utils.brand_palettes['vnstock'])
+            pos_color = palette[0] if len(palette) > 0 else '#66BB6A'
+            neg_color = palette[3] if len(palette) > 3 else '#EF5350'
+            cmap = LinearSegmentedColormap.from_list("custom_cmap", [neg_color, '#ffffff', pos_color])
+            
             fig, ax = cls.heatmap(pivot, title=title, figsize=figsize, annot=True, fmt='.1%', cmap=cmap, center=0, 
                                   linewidths=1, linecolor='white', cbar_kws={'shrink': 0.8}, 
                                   annot_kws={"size": 8}, **kwargs)

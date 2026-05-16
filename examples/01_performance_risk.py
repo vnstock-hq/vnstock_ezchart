@@ -12,16 +12,22 @@ from vnstock_ezchart import Chart
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--lang', type=str, default='vi', choices=['vi', 'en'])
+parser.add_argument('--theme', type=str, default='vnstock', choices=['vnstock', 'academic', 'minimal', 'flatui'])
 args, _ = parser.parse_known_args()
 
-out_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'docs', 'assets', 'gallery'))
+out_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'docs', 'assets', 'gallery', args.theme, args.lang))
 os.makedirs(out_dir, exist_ok=True)
 
-Chart.set_theme(theme_name='vnstock', font_name='Inter', lang=args.lang)
+Chart.set_theme(theme_name=args.theme, font_name='Inter', lang=args.lang)
+
+from vnstock_ezchart.utils import Utils
+theme_colors = Utils.brand_palettes[args.theme]
+c_pos = theme_colors[0]
+c_neg = theme_colors[3] if len(theme_colors) > 3 else theme_colors[1]
+c_accent = theme_colors[2] if len(theme_colors) > 2 else theme_colors[0]
 
 def save_chart(fig, name):
-    suffix = '_en' if args.lang == 'en' else ''
-    fig.savefig(os.path.join(out_dir, f'{name}{suffix}.png'), bbox_inches='tight', dpi=150)
+    fig.savefig(os.path.join(out_dir, f'{name}.png'), bbox_inches='tight', dpi=150)
     plt.close(fig)
 
 print(f"Đang tạo biểu đồ Performance & Risk ({args.lang})...")
@@ -68,7 +74,7 @@ fig, ax = Chart.bar(
     data_labels=True, 
     data_label_format='{:.1%}',
     show_yaxis=False, 
-    color_palette=['#66BB6A' if v > 0 else '#E57373' for v in yearly_returns.values]
+    color_palette=[c_pos if v > 0 else c_neg for v in yearly_returns.values]
 )
 save_chart(fig, '03_yearly_returns')
 
@@ -80,7 +86,7 @@ fig, ax = Chart.line(
     rolling_vol, 
     title=title_4,
     ylabel=ylabel_4,
-    color_palette=['#E57373'],
+    color_palette=[c_neg],
     ytick_format='{:.1%}',
     grid=True
 )
@@ -97,7 +103,28 @@ fig, ax = Chart.hist(
     ylabel=ylabel_5, 
     bins=50, 
     xtick_format='{:.1%}',
-    color_palette=['#66BB6A']
+    color_palette=[c_pos]
 )
-ax.axvline(x=0, color='#FFB74D', linestyle='--', linewidth=1.5)
+ax.axvline(x=0, color=c_accent, linestyle='--', linewidth=1.5)
 save_chart(fig, '05_returns_distribution')
+
+# 6. Seasonality Boxplot
+np.random.seed(42)
+months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+returns_data = [np.random.normal(0.02, 0.05, 20) for _ in range(12)]
+df_season = pd.DataFrame(returns_data).T
+df_season.columns = months if args.lang == 'en' else ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12']
+
+title_6 = 'Monthly Returns Seasonality (Boxplot)' if args.lang == 'en' else 'Tính Chu kỳ: Phân bổ Lợi nhuận theo Tháng (Boxplot)'
+xlabel_6 = 'Month' if args.lang == 'en' else 'Tháng'
+ylabel_6 = 'Returns (%)' if args.lang == 'en' else 'Tỷ suất lợi nhuận (%)'
+
+fig, ax = Chart.boxplot(
+    df_season, 
+    title=title_6, 
+    xlabel=xlabel_6, 
+    ylabel=ylabel_6,
+    ytick_format='{:.1%}',
+    show=False
+)
+save_chart(fig, '13_seasonality_boxplot')

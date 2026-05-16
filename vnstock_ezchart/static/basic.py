@@ -18,6 +18,7 @@ import numpy as np
 class BasicMixin:
         @classmethod
         def bar(cls, data: Union['pd.DataFrame', 'pd.Series'], **kwargs) -> Tuple['plt.Figure', 'plt.Axes']:
+            show_plot = kwargs.pop('show', True)
             """
             Draws a bar chart.
 
@@ -68,11 +69,13 @@ class BasicMixin:
             plot_kwargs = cls._filter_plot_kwargs(kwargs)
             data.plot(kind='bar', ax=ax, **plot_kwargs)
             cls.apply_chart_style(ax, **style_kwargs)
-            plt.show()
+            if show_plot and plt.get_backend().lower() != 'agg':
+                plt.show()
             cls._inject_logo(fig, kwargs)
             return fig, ax
         @classmethod
         def hist(cls, data: Union['pd.DataFrame', 'pd.Series'], **kwargs) -> Tuple['plt.Figure', 'plt.Axes']:
+            show_plot = kwargs.pop('show', True)
             """
             Represents the data distribution using a histogram.
         
@@ -125,11 +128,13 @@ class BasicMixin:
             plot_kwargs = cls._filter_plot_kwargs(kwargs)
             data.plot(kind='hist', ax=ax, **plot_kwargs)
             cls.apply_chart_style(ax, **style_kwargs)
-            plt.show()
+            if show_plot and plt.get_backend().lower() != 'agg':
+                plt.show()
             cls._inject_logo(fig, kwargs)
             return fig, ax
         @classmethod
         def pie(cls, data: Union[list, 'pd.Series'], labels: list, **kwargs) -> Tuple['plt.Figure', 'plt.Axes']:
+            show_plot = kwargs.pop('show', True)
             """
             Represents data as a pie chart.
 
@@ -163,11 +168,13 @@ class BasicMixin:
             plot_kwargs = cls._filter_plot_kwargs(kwargs)
             data.plot(kind='pie', labels=labels, ax=ax, autopct='%1.1f%%', **plot_kwargs)
             cls.apply_chart_style(ax, **style_kwargs)
-            plt.show()
+            if show_plot and plt.get_backend().lower() != 'agg':
+                plt.show()
             cls._inject_logo(fig, kwargs)
             return fig, ax
         @classmethod
         def line(cls, data: Union['pd.DataFrame', 'pd.Series'], **kwargs) -> Tuple['plt.Figure', 'plt.Axes']:
+            show_plot = kwargs.pop('show', True)
             """
             Represents data over time (timeseries). Data must have a datetime index.
 
@@ -219,11 +226,13 @@ class BasicMixin:
             plot_kwargs = cls._filter_plot_kwargs(kwargs)
             data.plot(ax=ax, **plot_kwargs)
             cls.apply_chart_style(ax, **style_kwargs)
-            plt.show()
+            if show_plot and plt.get_backend().lower() != 'agg':
+                plt.show()
             cls._inject_logo(fig, kwargs)
             return fig, ax
         @classmethod
         def scatter(cls, data: 'pd.DataFrame', x: str, y: str, **kwargs) -> Tuple['plt.Figure', 'plt.Axes']:
+            show_plot = kwargs.pop('show', True)
             """
             Represents data using a scatter plot.
 
@@ -275,11 +284,13 @@ class BasicMixin:
             plot_kwargs = cls._filter_plot_kwargs(kwargs)
             data.plot(kind='scatter', x=x, y=y, ax=ax, **plot_kwargs)
             cls.apply_chart_style(ax, **style_kwargs)
-            plt.show()
+            if show_plot and plt.get_backend().lower() != 'agg':
+                plt.show()
             cls._inject_logo(fig, kwargs)
             return fig, ax
         @classmethod
         def combo(cls, bar_data: Union['pd.Series', 'pd.DataFrame'], line_data: Union['pd.Series', 'pd.DataFrame'], left_ylabel: str = 'Bar Data', right_ylabel: str = 'Line Data', **kwargs) -> Tuple['plt.Figure', 'plt.Axes', 'plt.Axes']:
+            show_plot = kwargs.pop('show', True)
             """
             Creates a combo chart with a bar chart and a line chart on two different Y axes.
 
@@ -291,7 +302,9 @@ class BasicMixin:
             # Setup figure and primary axis
             fig, ax1 = plt.subplots()
             mpl_plot_instance = cls()
-            mpl_plot_instance.utils.apply_palette(kwargs.pop('color_palette', cls._global_theme), kwargs.pop('palette_shuffle', False))
+            
+            palette_name = kwargs.get('color_palette', cls._global_theme)
+            mpl_plot_instance.utils.apply_palette(palette_name, kwargs.pop('palette_shuffle', False))
 
             style_kwargs = {k: kwargs.pop(k, None) for k in ['title', 'xlabel', 'grid', 
                                                             'data_labels', 'data_label_format', 'legend_title', 'series_names', 
@@ -303,11 +316,15 @@ class BasicMixin:
                                                             'data_label_position', 'data_label_color', 'data_label_fontsize']}
 
             # Get palette colors
-            palette_name = kwargs.get('color_palette', 'vnstock')
-            palette = Utils.brand_palettes.get(palette_name, Utils.brand_palettes['vnstock'])
-            bar_color = palette[0]
-            # Use a warm color (index 2 or 3) for contrast, default to a soft orange if available
-            line_color = palette[2] if len(palette) > 2 else '#FFB74D' 
+            palette_name = kwargs.pop('color_palette', cls._global_theme)
+            if isinstance(palette_name, str):
+                palette = Utils.brand_palettes.get(palette_name, Utils.brand_palettes['vnstock'])
+                bar_color = palette[0]
+                line_color = palette[2] if len(palette) > 2 else '#FFB74D'
+            else:
+                palette = palette_name
+                bar_color = palette[0] if len(palette) > 0 else '#66BB6A'
+                line_color = palette[1] if len(palette) > 1 else '#FFB74D'
 
             # Bar chart
             plot_kwargs = cls._filter_plot_kwargs(kwargs)
@@ -331,7 +348,8 @@ class BasicMixin:
             handles2, labels2 = ax2.get_legend_handles_labels()
             ax1.legend(handles1 + handles2, labels1 + labels2, loc='upper left')
 
-            plt.show()
+            if show_plot and plt.get_backend().lower() != 'agg':
+                plt.show()
             cls._inject_logo(fig, kwargs)
             return fig, ax1, ax2
         @classmethod

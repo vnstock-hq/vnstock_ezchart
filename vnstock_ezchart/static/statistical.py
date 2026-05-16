@@ -18,6 +18,7 @@ import numpy as np
 class StatisticalMixin:
         @classmethod
         def boxplot(cls, data: 'pd.DataFrame', **kwargs) -> Tuple['plt.Figure', 'plt.Axes']:
+            show_plot = kwargs.pop('show', True)
             """
             Represents data using a boxplot.
 
@@ -70,7 +71,8 @@ class StatisticalMixin:
             plot_kwargs = cls._filter_plot_kwargs(kwargs)
             data.plot(kind='box', ax=ax, **plot_kwargs)
             cls.apply_chart_style(ax, **style_kwargs)
-            plt.show()
+            if show_plot and plt.get_backend().lower() != 'agg':
+                plt.show()
             cls._inject_logo(fig, kwargs)
             return fig, ax
         @classmethod

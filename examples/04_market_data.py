@@ -12,16 +12,21 @@ from vnstock_ezchart import Chart
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--lang', type=str, default='vi', choices=['vi', 'en'])
+parser.add_argument('--theme', type=str, default='vnstock', choices=['vnstock', 'academic', 'minimal', 'flatui'])
 args, _ = parser.parse_known_args()
 
-out_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'docs', 'assets', 'gallery'))
+out_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'docs', 'assets', 'gallery', args.theme, args.lang))
 os.makedirs(out_dir, exist_ok=True)
 
-Chart.set_theme(theme_name='vnstock', font_name='Inter', lang=args.lang)
+Chart.set_theme(theme_name=args.theme, font_name='Inter', lang=args.lang)
+
+from vnstock_ezchart.utils import Utils
+theme_colors = Utils.brand_palettes[args.theme]
+c_pos = theme_colors[0]
+c_neg = theme_colors[3] if len(theme_colors) > 3 else theme_colors[1]
 
 def save_chart(fig, name):
-    suffix = '_en' if args.lang == 'en' else ''
-    fig.savefig(os.path.join(out_dir, f'{name}{suffix}.png'), bbox_inches='tight', dpi=150)
+    fig.savefig(os.path.join(out_dir, f'{name}.png'), bbox_inches='tight', dpi=150)
     plt.close(fig)
 
 print(f"Đang tạo biểu đồ Market Data ({args.lang})...")
@@ -36,7 +41,7 @@ volumes = list(bid_volumes) + list(ask_volumes)
 orderbook = pd.DataFrame({'Price' if args.lang == 'en' else 'Giá': prices, 'Volume' if args.lang == 'en' else 'Khối lượng': volumes})
 orderbook.set_index('Price' if args.lang == 'en' else 'Giá', inplace=True)
 
-colors = ['#66BB6A' if i < len(bid_volumes) else '#E57373' for i in range(len(prices))]
+colors = [c_pos if i < len(bid_volumes) else c_neg for i in range(len(prices))]
 
 title_11 = 'Order Book / Volume Profile' if args.lang == 'en' else 'Bước giá - Khối lượng (Order Book / Volume Profile)'
 xlabel_11 = 'Price Level (VND)' if args.lang == 'en' else 'Mức giá (VND)'
@@ -60,7 +65,7 @@ dates = pd.date_range('2023-10-01', periods=30, freq='B')
 net_value = np.random.uniform(-500, 800, 30) # Tỷ VNĐ
 foreign_trade = pd.Series(net_value, index=dates.strftime('%d/%m'))
 
-colors_ft = ['#66BB6A' if v > 0 else '#E57373' for v in net_value]
+colors_ft = [c_pos if v > 0 else c_neg for v in net_value]
 title_12 = 'Net Foreign Trade Flow' if args.lang == 'en' else 'Dòng tiền Khối Ngoại (Net Foreign Trade)'
 xlabel_12 = 'Trading Day' if args.lang == 'en' else 'Ngày giao dịch'
 ylabel_12 = 'Net Buy Value (Bn VND)' if args.lang == 'en' else 'Giá trị mua ròng (Tỷ VNĐ)'
@@ -94,7 +99,7 @@ fig, ax = Chart.wordcloud(
     sentiment_text_en if args.lang == 'en' else sentiment_text_vi, 
     title=title_13, 
     max_words=30,
-    color_palette='trend',
+    color_palette=args.theme,
     show=False
 )
 save_chart(fig, '12_sentiment_wordcloud')

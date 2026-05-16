@@ -59,8 +59,9 @@ class Utils:
         'vnstock': ['#66BB6A', '#64B5F6', '#FFB74D', '#E57373', '#BA68C8', '#90A4AE'],
         'learn_anything': ['#002E5D', '#00FF84', '#FFD700', '#808080'],
         'beach' : ['#217074', '#37745B', '#8B9D77', '#E7EAEF', '#EDC5AB'],
-        'forest' : ['#162e1a', '#437a38', '#97b261', '#c5d7d7', '#536b69']
-
+        'forest' : ['#162e1a', '#437a38', '#97b261', '#c5d7d7', '#536b69'],
+        'academic' : ['#009E73', '#0072B2', '#E69F00', '#D55E00', '#CC79A7', '#56B4E9', '#000000'], # Semantic order (0: Pos, 1: Pri, 2: Sec, 3: Neg)
+        'minimal' : ['#10B981', '#1E293B', '#94A3B8', '#EF4444', '#64748B', '#CBD5E1'] # Modern Nord/Slate Semantic
     }
 
     @classmethod

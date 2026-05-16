@@ -11,16 +11,17 @@ scripts = [
     '07_backtest.py'
 ]
 
-# Generate Vietnamese version (default)
-print("--- GENERATING VIETNAMESE CHARTS ---")
-for script in scripts:
-    print(f"Running {script} (vi)...")
-    subprocess.run(['python3', os.path.join('examples', script), '--lang', 'vi'], check=True)
+themes = ['vnstock', 'academic', 'minimal']
+langs = ['vi', 'en']
 
-# Generate English version
-print("\n--- GENERATING ENGLISH CHARTS ---")
-for script in scripts:
-    print(f"Running {script} (en)...")
-    subprocess.run(['python3', os.path.join('examples', script), '--lang', 'en'], check=True)
+for theme in themes:
+    print(f"\n{'='*50}")
+    print(f"GENERATING CHARTS FOR THEME: {theme.upper()}")
+    print(f"{'='*50}")
+    for lang in langs:
+        print(f"\n--- Language: {lang.upper()} ---")
+        for script in scripts:
+            print(f"Running {script}...")
+            subprocess.run(['python3', os.path.join('examples', script), '--lang', lang, '--theme', theme], check=True)
 
-print("\nĐã hoàn tất sinh toàn bộ bộ sưu tập biểu đồ song ngữ!")
+print("\nĐã hoàn tất sinh toàn bộ bộ sưu tập biểu đồ song ngữ đa theme!")

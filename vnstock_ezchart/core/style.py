@@ -157,7 +157,9 @@ class StyleMixin:
                     legend.get_frame().set_facecolor('#ffffff')
                     legend.get_frame().set_alpha(0.8)
             else:
-                ax.legend().set_visible(False)
+                legend = ax.get_legend()
+                if legend:
+                    legend.set_visible(False)
             
             if figsize:
                 ax.figure.set_size_inches(figsize)

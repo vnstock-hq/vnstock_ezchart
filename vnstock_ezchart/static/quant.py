@@ -46,8 +46,8 @@ class QuantMixin:
         
         buy_color = up_color
         sell_color = down_color
-        equity_color = '#3b82f6' # Blue
-        drawdown_color = '#ef4444' # Red
+        equity_color = palette[1] if len(palette) > 1 else '#3b82f6'
+        drawdown_color = palette[3] if len(palette) > 3 else '#ef4444'
 
         mc = mpf.make_marketcolors(
             up=up_color, down=down_color, edge='inherit', wick='inherit', volume='in', ohlc='inherit'
@@ -267,7 +267,7 @@ class QuantMixin:
             else:
                 plt.savefig(savefig_kwargs)
                 
-        if show_kwargs:
+        if show_kwargs and plt.get_backend().lower() != 'agg':
             plt.show()
             
         return fig, axes

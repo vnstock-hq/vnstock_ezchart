@@ -12,16 +12,16 @@ from vnstock_ezchart import Chart
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--lang', type=str, default='vi', choices=['vi', 'en'])
+parser.add_argument('--theme', type=str, default='vnstock', choices=['vnstock', 'academic', 'minimal', 'flatui'])
 args, _ = parser.parse_known_args()
 
-out_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'docs', 'assets', 'gallery'))
+out_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'docs', 'assets', 'gallery', args.theme, args.lang))
 os.makedirs(out_dir, exist_ok=True)
 
-Chart.set_theme(theme_name='vnstock', font_name='Inter', lang=args.lang)
+Chart.set_theme(theme_name=args.theme, font_name='Inter', lang=args.lang)
 
 def save_chart(fig, name):
-    suffix = '_en' if args.lang == 'en' else ''
-    fig.savefig(os.path.join(out_dir, f'{name}{suffix}.png'), bbox_inches='tight', dpi=150)
+    fig.savefig(os.path.join(out_dir, f'{name}.png'), bbox_inches='tight', dpi=150)
     plt.close(fig)
 
 print(f"Đang tạo biểu đồ Summary Cards ({args.lang})...")
